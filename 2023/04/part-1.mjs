@@ -7,7 +7,7 @@ export default class CardProcessor {
 
   #getGuessedNumbers = ({ winNumbers, yourNumbers }) => yourNumbers.filter((n) => winNumbers.includes(n));
 
-  #getPointsPerCard = ({ length }) => length ? 2 ** (length - 1) : 0;
+  #getPointsPerCard = ({ length }) => length && 2 ** (length - 1);
 
   #addAll = ((acc, n) => acc + n);
 
