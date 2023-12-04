@@ -11,7 +11,7 @@ export default class InputParser {
     const [rowStart, rowEnd] = row.split(':').map((x) => x.trim());
     const [winNumbers, yourNumbers] = rowEnd.split(' | ')
       .map((x) => x.trim())
-      .map((x) => this.#parseNumbers(x));
+      .map(this.#parseNumbers);
 
     return {
       id: this.#parseCardId(rowStart),
