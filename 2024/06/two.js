@@ -31,7 +31,7 @@ const getNextPositionOrNull = (map, position, direction) => {
 const getNextDirection = (direction) => directions[(directions.indexOf(direction) + 1) % 4];
 
 const isObstructionUseful = (map) => {
-  const visitedPositions = new Set([]);
+  const visitedPositions = new Set();
   let direction = "up";
   let nextPosition = getInitialPosition(map);
 
@@ -54,6 +54,7 @@ const isObstructionUseful = (map) => {
 }
 
 async function run() {
+  const startTime = Date.now();
   let obstructions = 0;
   const input = await fs.readFile(filePath, "utf8");
   const map = input
@@ -61,12 +62,10 @@ async function run() {
     .map((row, i) => row.split("")
     .map((value, j) => ({ value, x: j, y: i, visitedDirections: [] })));
 
-  const initialPosition = getInitialPosition(map);
-
   for (let i = 0; i < map.length; i += 1) {
     for (let j = 0; j < map[i].length; j += 1) {
       const current = map[i][j];
-      if (current.value !== "." || current === initialPosition) {
+      if (current.value !== ".") {
         continue;
       }
 
@@ -79,7 +78,10 @@ async function run() {
     }
   }
 
-  console.log({ obstructions });
+  console.log({
+    obstructions,
+    durationSeconds: Math.round((Date.now() - startTime) / 1000),
+  });
 }
 
 run();
