@@ -80,7 +80,7 @@ async function run() {
 
   console.log({
     obstructions,
-    durationSeconds: Math.round((Date.now() - startTime) / 1000),
+    durationSeconds: (Date.now() - startTime) / 1000,
   });
 }
 
