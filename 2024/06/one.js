@@ -17,18 +17,10 @@ const getNextPositionOrNull = (map, position, direction) => {
   const getPositionOrNull = (x, y) => map[y]?.[x] || null;
 
   switch (direction) {
-    case "up": {
-      return getPositionOrNull(x, y - 1);
-    }
-    case "right": {
-      return getPositionOrNull(x + 1, y);
-    }
-    case "down": {
-      return getPositionOrNull(x, y + 1);
-    }
-    case "left": {
-      return getPositionOrNull(x - 1, y);
-    }
+    case "up": return getPositionOrNull(x, y - 1);
+    case "right": return getPositionOrNull(x + 1, y);
+    case "down": return getPositionOrNull(x, y + 1);
+    case "left": return getPositionOrNull(x - 1, y);
     default: throw new Error("Wrong direction!");
   }
 };
@@ -52,7 +44,7 @@ async function run() {
   while (nextPosition) {
     const currentPosition = nextPosition;
 
-    visitedPositions.add(nextPosition);
+    visitedPositions.add(currentPosition);
     nextPosition = getNextPositionOrNull(map, currentPosition, direction);
 
     while (nextPosition?.value === "#") {
@@ -61,22 +53,7 @@ async function run() {
     }
   }
 
-  console.log({ initialPosition, count: visitedPositions.size });
-
-  // let res = "";
-  
-  // for (let i = 0; i < map.length; i += 1) {
-  //   for (let j = 0; j < map.length; j += 1) {
-  //     if (visitedPositions.has(map[i][j])) {
-  //       res = res.concat("X");
-  //     } else {
-  //       res = res.concat(map[i][j].value);
-  //     }
-  //   }
-  //   res = res.concat("\n");
-  // }
-
-  // console.log(res);
+  console.log({ count: visitedPositions.size });
 }
 
 run();

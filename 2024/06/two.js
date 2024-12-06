@@ -3,6 +3,9 @@ const fs = require("node:fs/promises");
 const YEAR_DIR = process.cwd();
 const DAY = "06";
 const filePath = `${YEAR_DIR}/${DAY}/input.txt`;
+const directions = ["up", "right", "down", "left"];
+
+const cloneMap = (map) => map.map((row) => row.map((item) => ({ ...item, visitedDirections: [] })));
 
 const getInitialPosition = (map) => {
   for (const row of map) {
@@ -17,23 +20,14 @@ const getNextPositionOrNull = (map, position, direction) => {
   const getPositionOrNull = (x, y) => map[y]?.[x] || null;
 
   switch (direction) {
-    case "up": {
-      return getPositionOrNull(x, y - 1);
-    }
-    case "right": {
-      return getPositionOrNull(x + 1, y);
-    }
-    case "down": {
-      return getPositionOrNull(x, y + 1);
-    }
-    case "left": {
-      return getPositionOrNull(x - 1, y);
-    }
+    case "up": return getPositionOrNull(x, y - 1);
+    case "right": return getPositionOrNull(x + 1, y);
+    case "down": return getPositionOrNull(x, y + 1);
+    case "left": return getPositionOrNull(x - 1, y);
     default: throw new Error("Wrong direction!");
   }
 };
 
-const directions = ["up", "right", "down", "left"];
 const getNextDirection = (direction) => directions[(directions.indexOf(direction) + 1) % 4];
 
 const isObstructionUseful = (map) => {
@@ -42,15 +36,12 @@ const isObstructionUseful = (map) => {
   let nextPosition = getInitialPosition(map);
 
   while (nextPosition) {
-    if (nextPosition.visitedDirections.includes(direction)) {
-      return true;
-    }
-
-    nextPosition.visitedDirections.push(direction);
+    if (nextPosition.visitedDirections.includes(direction)) return true;
 
     const currentPosition = nextPosition;
 
-    visitedPositions.add(nextPosition);
+    currentPosition.visitedDirections.push(direction);
+    visitedPositions.add(currentPosition);
     nextPosition = getNextPositionOrNull(map, currentPosition, direction);
 
     while (nextPosition?.value === "#") {
@@ -62,9 +53,8 @@ const isObstructionUseful = (map) => {
   return false;
 }
 
-const cloneMap = (map) => map.map((row) => row.map((item) => ({ ...item, visitedDirections: [] })));
-
 async function run() {
+  let obstructions = 0;
   const input = await fs.readFile(filePath, "utf8");
   const map = input
     .split("\n")
@@ -73,12 +63,8 @@ async function run() {
 
   const initialPosition = getInitialPosition(map);
 
-  let total = 0;
-  let obstructions = 0;
-
   for (let i = 0; i < map.length; i += 1) {
     for (let j = 0; j < map[i].length; j += 1) {
-      total += 1;
       const current = map[i][j];
       if (current.value !== "." || current === initialPosition) {
         continue;
@@ -89,13 +75,11 @@ async function run() {
 
       obstruction.value = "#";
 
-      if (isObstructionUseful(currentMap)) {
-        obstructions += 1;
-      }
+      if (isObstructionUseful(currentMap)) obstructions += 1;
     }
   }
 
-  console.log({ obstructions, total });
+  console.log({ obstructions });
 }
 
 run();
