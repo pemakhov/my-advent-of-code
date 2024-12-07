@@ -9,7 +9,7 @@ const parseInput = (input) => {
     .split("\n")
     .map((row) => {
       const [value, args] = row.split(": ");
-
+      
       return {
         value: parseInt(value, 10),
         args: args.split(" "),
@@ -17,7 +17,7 @@ const parseInput = (input) => {
     });
 };
 
-const operators = ["+", "*", "||"];
+const operators = ["+", "*", ""];
 
 const isEquationTrue = (value, args) => {
   if (args.length === 1) {
@@ -27,12 +27,7 @@ const isEquationTrue = (value, args) => {
   const [firstArg, secondArg, ...rest] = args;
 
   for (const operator of operators) {
-    if (
-      isEquationTrue(
-        value,
-        [eval(`${firstArg}${operator === "||" ? "" : operator}${secondArg}`), ...rest],
-      )
-    ) return true;
+    if (isEquationTrue(value, [eval(`${firstArg}${operator}${secondArg}`), ...rest])) return true;
   }
 
   return false;
@@ -44,11 +39,11 @@ async function run() {
 
   let sum = 0;
 
-  for (const {value, args} of data) {
+  for (const { value, args } of data) {
     sum += isEquationTrue(value, args) ? value : 0;
   }
 
-  console.log({sum});
+  console.log({ sum });
 }
 
 run();
